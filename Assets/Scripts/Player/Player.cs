@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 
 namespace Sokoban
@@ -10,14 +11,10 @@ namespace Sokoban
     public class Player : MonoBehaviour
     {
         [SerializeField] private PlayerMovement _movement;
-        private FieldManager _fieldManager;
         private bool _readyToMove = true;
-        
-        public void  InitPlayer(FieldManager field)
-        {
-            _fieldManager = field;
-        }
 
+        [Inject] private FieldManager _fieldManager;
+        
 
         private void Update()
         {
