@@ -11,24 +11,62 @@ namespace Sokoban
     public class Player : MonoBehaviour
     {
         [SerializeField] private PlayerMovement _movement;
+        [SerializeField] private float _treshthold;
         private bool _readyToMove = true;
 
-        [Inject] private FieldManager _fieldManager;
-        
+        [Inject] private FieldContainer _fieldContainer;
+        [Inject] private InputSystem _input;
 
-        private void Update()
+
+        private void OnEnable()
         {
-            Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            input.Normalize();
-            Debug.Log($"input {input} and _readyToMove {_readyToMove}");
-
-            if (input.sqrMagnitude > 0.5 && _readyToMove)
-            {
-                _readyToMove = false;
-                Move(input);
-            }
+            _input.OnInput += OnInput;
         }
 
+        // private void Update()
+        // {
+        //     Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        //     Vector2 direction = Vector2.zero;
+        //     if (input.x > _treshthold || input.x < -_treshthold)
+        //     {
+        //         if (input.x > 0)
+        //         {
+        //             direction = new Vector2(1, 0);
+        //         }
+        //         else if (input.x < 0)
+        //         {
+        //             direction = new Vector2(-1, 0);
+        //         }
+        //             
+        //     }
+        //     else if (input.y > _treshthold || input.y < -_treshthold)
+        //     {
+        //         if (input.y > 0)
+        //         {
+        //             direction = new Vector2(0, 1);
+        //         }
+        //         else if (input.y < 0)
+        //         {
+        //             direction = new Vector2(0, -1);
+        //         }
+        //     }
+        //
+        //     if (_readyToMove)
+        //     {
+        //         _readyToMove = false;
+        //         Move(direction);
+        //     }
+        // }
+
+        private void OnInput(Vector2 direction)
+        {
+            if (_readyToMove)
+            {
+                _readyToMove = false;
+                Move(direction);
+            }
+        }
+        
         private void Move(Vector2 direction)
         {
             if (CanMove(direction))
@@ -39,10 +77,8 @@ namespace Sokoban
 
         private bool CanMove(Vector2 direction)
         {
-            Debug.Log($"CanMove direction {direction} ");
-
             Vector2 newPosition = new Vector2(transform.position.x, transform.position.y) + direction;
-            foreach (var tile in _fieldManager.Tiles)
+            foreach (var tile in _fieldContainer.Tiles)
             {
                 if (tile.transform.position.x == newPosition.x && tile.transform.position.y == newPosition.y)
                 {
@@ -53,14 +89,15 @@ namespace Sokoban
                     }
                 }
             }
-            
-            foreach (var movable in _fieldManager.Movables)
+
+            foreach (IMovable movable in _fieldContainer.Movables)
             {
-                if (movable.transform.position.x == newPosition.x && movable.transform.position.y == newPosition.y)
+                Transform movableTransform = ((MonoBehaviour)movable).transform; 
+                if (movableTransform.position.x == newPosition.x && movableTransform.position.y == newPosition.y)
                 {
                     Vector2 positionBehindMovable = newPosition + direction;
 
-                    foreach (var tile in _fieldManager.Tiles)
+                    foreach (var tile in _fieldContainer.Tiles)
                     {
                         if (tile.transform.position.x == positionBehindMovable.x && tile.transform.position.y == positionBehindMovable.y)
                         {
@@ -72,15 +109,17 @@ namespace Sokoban
                         }
                     }
 
-                    foreach (var item in _fieldManager.Movables)
+                    foreach (var item in _fieldContainer.Movables)
                     {
-                        if (item.transform.position.x == positionBehindMovable.x && item.transform.position.y == positionBehindMovable.y)
+                        Transform itemTransform = ((MonoBehaviour)item).transform; 
+                        if (itemTransform.position.x == positionBehindMovable.x && itemTransform.position.y == positionBehindMovable.y)
                         {
                             _readyToMove = true;
                             return false;
                         }
                     }
-                   
+                    movable.Push(direction);
+                    return true;
                 }
             }
           
