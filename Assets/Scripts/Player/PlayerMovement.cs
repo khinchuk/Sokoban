@@ -13,25 +13,7 @@ namespace Sokoban
         [SerializeField] private float _stepSpeed = 0.5f;
          public void Move(Vector2 direction, Action<bool> callback)
          {
-             // if (Mathf.Abs(direction.x) < 0.5)
-             // {
-             //     direction.x = 0;
-             // }
-             // else
-             // {
-             //     direction.y = 0;
-             // }
-             //
-             // if (direction.x > 0.5)
-             // {
-             //     direction.x = 1;
-             // }
-             //
-             // if (direction.y > 0.5)
-             // {
-             //     direction.y = 1;
-             // }
-         
+            
              var newPosition = new Vector2(transform.position.x, transform.position.y ) + direction;
              
              bool moveIsFinished = true;

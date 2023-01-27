@@ -11,53 +11,19 @@ namespace Sokoban
     public class Player : MonoBehaviour
     {
         [SerializeField] private PlayerMovement _movement;
-        [SerializeField] private float _treshthold;
         private bool _readyToMove = true;
 
-        [Inject] private FieldContainer _fieldContainer;
-        [Inject] private InputSystem _input;
+        private FieldContainer _fieldContainer;
+        private InputSystem _input;
 
-
-        private void OnEnable()
+        public void Init(FieldContainer fieldContainer, InputSystem input)
         {
+            _fieldContainer = fieldContainer;
+            _input = input;
             _input.OnInput += OnInput;
         }
-
-        // private void Update()
-        // {
-        //     Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        //     Vector2 direction = Vector2.zero;
-        //     if (input.x > _treshthold || input.x < -_treshthold)
-        //     {
-        //         if (input.x > 0)
-        //         {
-        //             direction = new Vector2(1, 0);
-        //         }
-        //         else if (input.x < 0)
-        //         {
-        //             direction = new Vector2(-1, 0);
-        //         }
-        //             
-        //     }
-        //     else if (input.y > _treshthold || input.y < -_treshthold)
-        //     {
-        //         if (input.y > 0)
-        //         {
-        //             direction = new Vector2(0, 1);
-        //         }
-        //         else if (input.y < 0)
-        //         {
-        //             direction = new Vector2(0, -1);
-        //         }
-        //     }
-        //
-        //     if (_readyToMove)
-        //     {
-        //         _readyToMove = false;
-        //         Move(direction);
-        //     }
-        // }
-
+        
+      
         private void OnInput(Vector2 direction)
         {
             if (_readyToMove)
@@ -126,5 +92,9 @@ namespace Sokoban
             return true;
         }
       
+        private void OnDestroy()
+        {
+            _input.OnInput -= OnInput;
+        }
     }
 }

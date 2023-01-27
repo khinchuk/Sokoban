@@ -11,20 +11,22 @@ namespace Sokoban
     {
         private Tile[] _tiles;
         private IMovable[] _movables;
-        private FieldContainer _fieldContainer;
 
         public Tile[] Tiles => _tiles;
         public IMovable[] Movables => _movables;
-        
+
+
+        public Action OnEnvironmentContainFinifhed;
         private void Start()
         {
             ContainAllLevelEnvironment();
         }
 
-        private void ContainAllLevelEnvironment()
+        public void ContainAllLevelEnvironment()
         {
             _tiles = FindObjectsOfType<Tile>();
             _movables = FindObjectsOfType<Chest>();
+            OnEnvironmentContainFinifhed?.Invoke();
         }
 
         private void OnDisable()

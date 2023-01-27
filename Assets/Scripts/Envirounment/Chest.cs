@@ -13,7 +13,7 @@ namespace Sokoban
 
         [SerializeField] private float _stepSpeed = 0.5f;
 
-        public Transform ChestTransform => transform;
+        public Transform Transform => transform;
         
         public void Push(Vector2 direction)
         {
@@ -39,6 +39,8 @@ namespace Sokoban
             var newPosition = new Vector2(transform.position.x, transform.position.y ) + direction;
             transform.DOMove(newPosition, _stepSpeed).SetEase(Ease.Linear);
         }
+
+        
     }
 
 }

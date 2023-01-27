@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 public class Timer : MonoBehaviour
 {
     [SerializeField] private float interval = 1f;
-    public Text timerText;
+    public TextMeshProUGUI timerText;
     private IDisposable timer;
 
     void Start()
@@ -16,15 +17,17 @@ public class Timer : MonoBehaviour
 
     public void StartTimer()
     {
-        timer = Observable.Interval(TimeSpan.FromSeconds(interval))
-            .Subscribe(_ =>
-            {
-                timerText.text = interval.ToString("F2");
+        var startTime = DateTime.Now;
+        Observable.Interval(TimeSpan.FromSeconds(1))
+            .Subscribe(_ => {
+                var elapsed = DateTime.Now - startTime;
+                timerText.text = $" Time {elapsed.Minutes}:{elapsed.Seconds}";
             });
     }
+    
 
     public void StopTimer()
     {
-        timer.Dispose();
+        
     }
 }
