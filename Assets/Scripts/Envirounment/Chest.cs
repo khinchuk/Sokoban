@@ -10,12 +10,12 @@ namespace Sokoban
     
     public class Chest : MonoBehaviour, IMovable
     {
-
         [SerializeField] private float _stepSpeed = 0.5f;
 
         public Transform Transform => transform;
+
         
-        public void Push(Vector2 direction)
+        public void Push(Vector2 direction, Action callback)
         {
             if (Mathf.Abs(direction.x) < 0.5)
             {
@@ -37,7 +37,8 @@ namespace Sokoban
             }
          
             var newPosition = new Vector2(transform.position.x, transform.position.y ) + direction;
-            transform.DOMove(newPosition, _stepSpeed).SetEase(Ease.Linear);
+            transform.DOMove(newPosition, _stepSpeed).SetEase(Ease.Linear)
+                .OnComplete( () => callback());
         }
 
         

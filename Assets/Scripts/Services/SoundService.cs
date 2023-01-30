@@ -31,11 +31,10 @@ namespace Sokoban.Service
 
     public class SoundService : MonoBehaviour, ISoundService
     {
-        [SerializeField] private SoundBank _soundBank;
         private const string _musicVolumeName = "Music_volume";
         private const string _sfxVolumeName = "SFX_volume";
 
-
+        [SerializeField] private SoundBank _soundBank;
         [SerializeField] private AudioSource _musicSource;
         [SerializeField] private AudioSource[] _sfxSource;
         [SerializeField] private AudioMixer _audioMixer;

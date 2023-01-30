@@ -9,16 +9,20 @@ using Zenject;
 
 namespace Sokoban
 {
-    public class ScoreService : MonoBehaviour
+    public interface IScoreService
+    {
+        public  bool IsAllGoalsResolved();
+    }
+    
+    public class ScoreService : MonoBehaviour, IScoreService
     {
         [Inject] private FieldContainer _fieldContainer;
-        [Inject] private SoundService _soundService;
 
         
         private Tile[] _tiles;
         private Tile[] _goalTiles;
         private IMovable[] _movables;
-        private List<Tile> _goalsList = new List<Tile>();
+        private List<Tile> _goalsList;
         
         public Action OnAllGoalsResolved;
 
@@ -33,6 +37,7 @@ namespace Sokoban
             if (_fieldContainer != null)
             {
                 _tiles = _fieldContainer.Tiles;
+                _goalsList = new List<Tile>();
                 Debug.Log($"_fieldContainer.Tiles {_fieldContainer.Tiles.Length}");
                 foreach (var tile in _tiles)
                 {
@@ -54,11 +59,7 @@ namespace Sokoban
             Debug.Log($"_GoalsList {_goalsList.Count}");
             _movables = _fieldContainer.Movables;
             
-            if (IsAllGoalsResolved())
-            {
-                _soundService.PlaySound(SFXType.AllGoals);
-            }
-            
+            _fieldContainer.OnEnvironmentContainFinifhed -= Init;
         }
         
 
@@ -75,18 +76,24 @@ namespace Sokoban
                
                 for (int j = 0; j < _movables.Length; j++)
                 {
-                    if (_goalsList[i].transform.position == _movables[j].Transform.position)
+                    if (_goalsList[i].transform.position.x == _movables[j].Transform.position.x &&
+                        _goalsList[i].transform.position.y == _movables[j].Transform.position.y)
                     {
-                        Debug.Log($"_goalsList {i} ==  _movables {j}  ");
+                        Debug.Log($"1st is  _goalsList {i} ==  _movables {j}  ");
                         break;
                     }
 
-                    if (_goalsList[i].transform.position != _movables[_movables.Length-1].Transform.position)
+                    if (j == _movables.Length-1)
                     {
-                        Debug.Log($"_goalsList {i} !=  _movables {_movables.Length-1}  ");
+                        if (_goalsList[i].transform.position.x != _movables[j].Transform.position.x ||
+                            _goalsList[i].transform.position.y != _movables[j].Transform.position.y)
+                        {
+                            Debug.Log($"2nd if _goalsList {i} !=  last _movables {_movables.Length-1}  ");
 
-                        return false;
+                            return false;
+                        }
                     }
+                   
                 }
             }
 

@@ -17,10 +17,6 @@ namespace Sokoban
 
 
         public Action OnEnvironmentContainFinifhed;
-        private void Start()
-        {
-            ContainAllLevelEnvironment();
-        }
 
         public void ContainAllLevelEnvironment()
         {
